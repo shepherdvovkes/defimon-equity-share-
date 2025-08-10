@@ -113,7 +113,7 @@ const NetworkBadge = styled.span`
   margin-left: 10px;
 `;
 
-function Header({ isConnected, onConnect, contractAddress }) {
+function Header({ isConnected, onConnect, contractAddress, currentUser }) {
   const getNetworkName = () => {
     if (typeof window.ethereum !== 'undefined') {
       const chainId = window.ethereum.chainId;
@@ -159,7 +159,7 @@ function Header({ isConnected, onConnect, contractAddress }) {
             <>
               <WalletInfo>
                 <FaCheckCircle style={{ marginRight: '8px', color: '#28a745' }} />
-                Кошелек подключен
+                {currentUser ? `${currentUser.name} (${currentUser.role})` : 'Кошелек подключен'}
                 <NetworkBadge>{getNetworkName()}</NetworkBadge>
               </WalletInfo>
               
