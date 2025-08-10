@@ -1,0 +1,35 @@
+{
+  "name": "defimon-equity-sharing",
+  "version": "1.0.0",
+  "description": "DEFIMON Equity Sharing Platform - Smart Contract and Web Interface",
+  "main": "index.js",
+  "scripts": {
+    "compile": "hardhat compile",
+    "test": "hardhat test",
+    "deploy:sepolia": "hardhat run scripts/deploy.js --network sepolia",
+    "deploy:localhost": "hardhat run scripts/deploy.js --network localhost",
+    "frontend:install": "cd frontend && npm install",
+    "frontend:start": "cd frontend && npm start",
+    "frontend:build": "cd frontend && npm run build",
+    "install:all": "npm install && npm run frontend:install"
+  },
+  "keywords": [
+    "ethereum",
+    "smart-contract",
+    "equity-sharing",
+    "vesting",
+    "defimon",
+    "erc20"
+  ],
+  "author": "DEFIMON Team",
+  "license": "MIT",
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "^4.0.0",
+    "@openzeppelin/contracts": "^5.0.0",
+    "hardhat": "^2.19.0",
+    "dotenv": "^16.3.1"
+  },
+  "dependencies": {
+    "ethers": "^6.8.1"
+  }
+}
