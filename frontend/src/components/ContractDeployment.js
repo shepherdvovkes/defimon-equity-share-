@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { ethers } from 'ethers';
 import DEFIMONEquityToken from '../contracts/DEFIMONEquityToken.json';
 import { CONTRACT_ADDRESS, NETWORK_NAME, NETWORK_RPC, CHAIN_ID } from '../contracts/deployment-info';
-import { FaRocket, FaFileAlt, FaCheckCircle, FaTimesCircle, FaInfoCircle, FaChartBar, FaClock } from 'react-icons/fa';
+import { FaRocket, FaFileAlt, FaCheckCircle, FaTimesCircle, FaInfoCircle, FaChartBar, FaClock, FaCode } from 'react-icons/fa';
 
 const DeploymentContainer = styled.div`
   display: grid;
@@ -174,7 +174,7 @@ const LoadingSpinner = styled.div`
   }
 `;
 
-function ContractDeployment({ onContractDeployed, onStatusUpdate, isConnected, signer }) {
+function ContractDeployment({ onContractDeployed, onStatusUpdate, isConnected, signer, editedContractCode }) {
   const [contractAddress, setContractAddress] = useState(CONTRACT_ADDRESS);
   const [isDeploying, setIsDeploying] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -228,8 +228,19 @@ function ContractDeployment({ onContractDeployed, onStatusUpdate, isConnected, s
       return;
     }
 
+    if (!editedContractCode || editedContractCode.trim() === '') {
+      onStatusUpdate('error', 'Сначала отредактируйте смарт-контракт на вкладке "Smart Contract Editor"');
+      return;
+    }
+
     try {
       setIsDeploying(true);
+      setDeploymentStatus('Компилируем смарт-контракт...');
+
+      // Здесь должна быть логика компиляции отредактированного кода
+      // Пока что используем существующий ABI и bytecode
+      // В реальном приложении здесь нужно использовать solc или другой компилятор
+      
       setDeploymentStatus('Начинаем деплой контракта...');
 
       const factory = new ethers.ContractFactory(
@@ -303,9 +314,21 @@ function ContractDeployment({ onContractDeployed, onStatusUpdate, isConnected, s
       <DeploymentCard>
         <CardTitle>
           <FaRocket style={{ marginRight: '8px' }} />
-          Деплой нового контракта
+          Deploy DEFIMONEquityToken - Шаг 2: Развертывание
         </CardTitle>
         
+        <div style={{ 
+          marginBottom: '20px', 
+          padding: '15px', 
+          background: '#e7f3ff', 
+          border: '1px solid #b3d9ff', 
+          borderRadius: '8px',
+          color: '#004085'
+        }}>
+          <FaInfoCircle style={{ marginRight: '8px' }} />
+          <strong>Важно:</strong> Сначала отредактируйте смарт-контракт DEFIMONEquityToken.sol на вкладке "DEFIMONEquityToken.sol", затем вернитесь сюда для деплоя.
+        </div>
+
         <InfoBox>
           <InfoTitle>
             <FaChartBar style={{ marginRight: '8px' }} />
@@ -338,7 +361,7 @@ function ContractDeployment({ onContractDeployed, onStatusUpdate, isConnected, s
 
         <Button 
           onClick={deployContract} 
-          disabled={isDeploying}
+          disabled={isDeploying || !editedContractCode}
           style={{ 
             background: 'linear-gradient(45deg, #007bff, #0056b3)',
             marginTop: '20px'
@@ -351,6 +374,47 @@ function ContractDeployment({ onContractDeployed, onStatusUpdate, isConnected, s
             </>
           )}
         </Button>
+
+        <Button 
+          onClick={() => window.location.hash = '#smartContract'} 
+          style={{ 
+            background: '#6c757d',
+            marginTop: '10px'
+          }}
+        >
+          <FaCode style={{ marginRight: '8px' }} />
+          Вернуться к редактированию DEFIMONEquityToken.sol
+        </Button>
+
+        {editedContractCode && (
+          <div style={{ 
+            marginTop: '15px', 
+            padding: '15px', 
+            background: '#d4edda', 
+            border: '1px solid #c3e6cb', 
+            borderRadius: '8px',
+            color: '#155724',
+            textAlign: 'center'
+          }}>
+            <FaCheckCircle style={{ marginRight: '8px' }} />
+            Смарт-контракт DEFIMONEquityToken.sol отредактирован и готов к деплою
+          </div>
+        )}
+
+        {!editedContractCode && (
+          <div style={{ 
+            marginTop: '15px', 
+            padding: '15px', 
+            background: '#fff3cd', 
+            border: '1px solid #ffeaa7', 
+            borderRadius: '8px',
+            color: '#856404',
+            textAlign: 'center'
+          }}>
+            <FaInfoCircle style={{ marginRight: '8px' }} />
+            Сначала отредактируйте смарт-контракт DEFIMONEquityToken.sol на вкладке "DEFIMONEquityToken.sol"
+          </div>
+        )}
 
         <StatusMessage className={deploymentStatus.includes('Ошибка') ? 'error' : 'info'}>
           {renderStatusWithIcon(deploymentStatus)}

@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import styled from 'styled-components';
 import { ethers } from 'ethers';
-import { FaDollarSign, FaChartLine, FaCog } from 'react-icons/fa';
+import { FaDollarSign, FaChartLine, FaEdit, FaCog, FaCoins } from 'react-icons/fa';
 
 const Container = styled.div`
   padding: 20px;
@@ -73,7 +73,7 @@ const PriceDisplay = styled.div`
 
 function TokenPriceManager({ contract, onStatusUpdate, isOwner }) {
   const [tokenData, setTokenData] = useState({
-    currentPrice: '0.50',
+    currentPrice: '0',
     marketCap: '0',
     totalSupply: '0',
     circulatingSupply: '0'
@@ -81,13 +81,7 @@ function TokenPriceManager({ contract, onStatusUpdate, isOwner }) {
   const [loading, setLoading] = useState(false);
   const [newPrice, setNewPrice] = useState('');
 
-  useEffect(() => {
-    if (contract) {
-      loadTokenData();
-    }
-  }, [contract]);
-
-  const loadTokenData = async () => {
+  const loadTokenData = useCallback(async () => {
     try {
       setLoading(true);
       // Здесь должна быть логика загрузки данных токена
@@ -103,7 +97,13 @@ function TokenPriceManager({ contract, onStatusUpdate, isOwner }) {
     } finally {
       setLoading(false);
     }
-  };
+  }, [onStatusUpdate]);
+
+  useEffect(() => {
+    if (contract) {
+      loadTokenData();
+    }
+  }, [contract, loadTokenData]);
 
   const updateTokenPrice = async () => {
     try {

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { ethers } from 'ethers';
-import { FaRocket, FaClipboardList, FaUserFriends } from 'react-icons/fa';
+import { FaUserPlus, FaUsers, FaTrash, FaEdit, FaSave, FaTimes } from 'react-icons/fa';
 
 const FormContainer = styled.div`
   display: grid;
@@ -436,7 +436,7 @@ function ParticipantForm({ contract, participants, onParticipantAdded, onStatusU
             >
               {isManaging ? 'Запуск...' : (
                 <>
-                  <FaRocket style={{ marginRight: '8px' }} />
+                  <FaUserPlus style={{ marginRight: '8px' }} />
                   Запустить вестинг
                 </>
               )}
@@ -453,7 +453,7 @@ function ParticipantForm({ contract, participants, onParticipantAdded, onStatusU
       {/* Список участников */}
       <FormSection>
         <SectionTitle>
-          <FaClipboardList style={{ marginRight: '8px' }} />
+          <FaUsers style={{ marginRight: '8px' }} />
           Список участников ({participants.length})
         </SectionTitle>
         

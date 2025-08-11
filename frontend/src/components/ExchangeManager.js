@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import styled from 'styled-components';
 import { ethers } from 'ethers';
-import { FaExchangeAlt, FaChartLine, FaCoins } from 'react-icons/fa';
+import { FaExchangeAlt, FaChartLine, FaCoins, FaPlus, FaMinus, FaExchangeAlt as FaSwap } from 'react-icons/fa';
 
 const Container = styled.div`
   padding: 20px;
@@ -39,19 +39,16 @@ const Button = styled.button`
   }
 `;
 
-const Input = styled.input`
-  width: 100%;
-  padding: 12px;
-  border: 1px solid #ced4da;
-  border-radius: 6px;
-  font-size: 16px;
-  margin: 5px 0;
+const FormGroup = styled.div`
+  margin-bottom: 20px;
+`;
 
-  &:focus {
-    outline: none;
-    border-color: #667eea;
-    box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.25);
-  }
+const Label = styled.label`
+  display: block;
+  margin-bottom: 8px;
+  color: #555;
+  font-weight: 500;
+  font-size: 14px;
 `;
 
 const Card = styled.div`
@@ -63,20 +60,14 @@ const Card = styled.div`
 `;
 
 function ExchangeManager({ contract, onStatusUpdate, isOwner }) {
+  const [loading, setLoading] = useState(false);
   const [exchangeData, setExchangeData] = useState({
     liquidity: '0',
     price: '0',
     volume: '0'
   });
-  const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    if (contract) {
-      loadExchangeData();
-    }
-  }, [contract]);
-
-  const loadExchangeData = async () => {
+  const loadExchangeData = useCallback(async () => {
     try {
       setLoading(true);
       // Здесь должна быть логика загрузки данных обмена
@@ -91,7 +82,13 @@ function ExchangeManager({ contract, onStatusUpdate, isOwner }) {
     } finally {
       setLoading(false);
     }
-  };
+  }, [onStatusUpdate]);
+
+  useEffect(() => {
+    if (contract) {
+      loadExchangeData();
+    }
+  }, [contract, loadExchangeData]);
 
   const addLiquidity = async () => {
     try {

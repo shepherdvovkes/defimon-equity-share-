@@ -1,7 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import styled from 'styled-components';
-import { ethers } from 'ethers';
-import { FaSignature, FaCheck, FaTimes, FaUserFriends } from 'react-icons/fa';
+import { FaSignature, FaUserCheck, FaUserTimes, FaClock, FaCheckCircle, FaTimesCircle } from 'react-icons/fa';
 
 const Container = styled.div`
   padding: 20px;
@@ -77,13 +76,7 @@ function MultiSignatureManager({ contract, onStatusUpdate, isOwner }) {
   const [proposals, setProposals] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    if (contract) {
-      loadProposals();
-    }
-  }, [contract]);
-
-  const loadProposals = async () => {
+  const loadProposals = useCallback(async () => {
     try {
       setLoading(true);
       // Здесь должна быть логика загрузки предложений
@@ -94,7 +87,13 @@ function MultiSignatureManager({ contract, onStatusUpdate, isOwner }) {
     } finally {
       setLoading(false);
     }
-  };
+  }, [onStatusUpdate]);
+
+  useEffect(() => {
+    if (contract) {
+      loadProposals();
+    }
+  }, [contract, loadProposals]);
 
   const createProposal = async () => {
     try {
@@ -140,7 +139,7 @@ function MultiSignatureManager({ contract, onStatusUpdate, isOwner }) {
         
         {isOwner && (
           <Button onClick={createProposal} disabled={loading}>
-            <FaUserFriends style={{ marginRight: '8px' }} />
+            <FaUserCheck style={{ marginRight: '8px' }} />
             Create New Proposal
           </Button>
         )}
@@ -170,7 +169,7 @@ function MultiSignatureManager({ contract, onStatusUpdate, isOwner }) {
                     disabled={loading}
                     style={{ background: '#28a745' }}
                   >
-                    <FaCheck style={{ marginRight: '8px' }} />
+                    <FaCheckCircle style={{ marginRight: '8px' }} />
                     Approve
                   </Button>
                   <Button 

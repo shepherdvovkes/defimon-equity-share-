@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import styled from 'styled-components';
 import { ethers } from 'ethers';
 import Header from './components/Header';
@@ -9,7 +9,8 @@ import MultiSignatureManager from './components/MultiSignatureManager';
 import ExchangeManager from './components/ExchangeManager';
 import TokenPriceManager from './components/TokenPriceManager';
 import SmartContractEditor from './components/SmartContractEditor';
-import { FaRocket, FaUsers, FaChartLine, FaSignature, FaExchangeAlt, FaDollarSign, FaCode } from 'react-icons/fa';
+import SecurityAuditor from './components/SecurityAuditor';
+import { FaRocket, FaUsers, FaChartLine, FaSignature, FaExchangeAlt, FaDollarSign, FaCode, FaShieldAlt } from 'react-icons/fa';
 import DEFIMONEquityToken from './contracts/DEFIMONEquityToken.json';
 import { isAuthorizedUser, getUserInfo } from './config/users';
 
@@ -109,7 +110,7 @@ const ConnectButton = styled.button`
 `;
 
 function App() {
-  const [activeTab, setActiveTab] = useState('deployment');
+  const [activeTab, setActiveTab] = useState('smartContract');
   const [provider, setProvider] = useState(null);
   const [signer, setSigner] = useState(null);
   const [contract, setContract] = useState(null);
@@ -120,9 +121,10 @@ function App() {
   const [participants, setParticipants] = useState([]);
   const [isVestingStarted, setIsVestingStarted] = useState(false);
   const [isOwner, setIsOwner] = useState(false);
+  const [editedContractCode, setEditedContractCode] = useState('');
 
   // Подключение к MetaMask
-  const connectWallet = async () => {
+  const connectWallet = useCallback(async () => {
     try {
       if (typeof window.ethereum !== 'undefined') {
         const provider = new ethers.BrowserProvider(window.ethereum);
@@ -134,13 +136,18 @@ function App() {
           const userInfo = getUserInfo(address);
           setCurrentUser(userInfo);
           
+          // Debug logging
+          console.log('Connected user info:', userInfo);
+          console.log('User role:', userInfo.role);
+          console.log('Is owner?', userInfo.role === 'owner');
+          
           setProvider(provider);
           setSigner(signer);
           setIsConnected(true);
           
           setStatus({
             type: 'success',
-            message: `Добро пожаловать, ${userInfo.name}! Кошелек успешно подключен.`
+            message: `Добро пожаловать, ${userInfo.name}! Кошелек успешно подключен. Роль: ${userInfo.role}`
           });
         } else {
           setStatus({
@@ -177,7 +184,7 @@ function App() {
         message: `Ошибка подключения: ${error.message}`
       });
     }
-  };
+  }, []);
 
   // Загрузка контракта
   const loadContract = async (address) => {
@@ -264,6 +271,11 @@ function App() {
     }
   };
 
+  // Обновление отредактированного кода контракта
+  const updateEditedContractCode = (code) => {
+    setEditedContractCode(code);
+  };
+
   // Отключение кошелька
   const disconnectWallet = () => {
     setIsConnected(false);
@@ -330,7 +342,7 @@ function App() {
     if (typeof window.ethereum !== 'undefined' && window.ethereum.selectedAddress) {
       connectWallet();
     }
-  }, []);
+  }, [connectWallet]);
 
   return (
     <AppContainer>
@@ -389,11 +401,18 @@ function App() {
           <>
             <TabContainer>
               <Tab 
+                active={activeTab === 'smartContract'} 
+                onClick={() => setActiveTab('smartContract')}
+              >
+                <FaCode style={{ marginRight: '8px' }} />
+                DEFIMONEquityToken.sol
+              </Tab>
+              <Tab 
                 active={activeTab === 'deployment'} 
                 onClick={() => setActiveTab('deployment')}
               >
                 <FaRocket style={{ marginRight: '8px' }} />
-                Деплой контракта
+                Deploy Contract
               </Tab>
               <Tab 
                 active={activeTab === 'participants'} 
@@ -431,21 +450,43 @@ function App() {
                 Token Price
               </Tab>
               <Tab 
-                active={activeTab === 'smartContract'} 
-                onClick={() => setActiveTab('smartContract')}
+                active={activeTab === 'security'} 
+                onClick={() => setActiveTab('security')}
               >
-                <FaCode style={{ marginRight: '8px' }} />
-                Smart Contract
+                <FaShieldAlt style={{ marginRight: '8px' }} />
+                Security Audit
               </Tab>
             </TabContainer>
 
+            {activeTab === 'smartContract' && (
+              <Card>
+                <h2>
+                  <FaCode style={{ marginRight: '8px' }} />
+                  Smart Contract Editor - Шаг 1: Редактирование DEFIMONEquityToken.sol
+                </h2>
+                <SmartContractEditor 
+                  contract={contract}
+                  onStatusUpdate={updateStatus}
+                  isOwner={currentUser && currentUser.role === 'owner'}
+                  onContractCodeUpdate={updateEditedContractCode}
+                />
+              </Card>
+            )}
+
             {activeTab === 'deployment' && (
-              <ContractDeployment 
-                onContractDeployed={loadContract}
-                onStatusUpdate={updateStatus}
-                isConnected={isConnected}
-                signer={signer}
-              />
+              <Card>
+                <h2>
+                  <FaRocket style={{ marginRight: '8px' }} />
+                  Deploy Contract - Шаг 2: Развертывание DEFIMONEquityToken
+                </h2>
+                <ContractDeployment 
+                  onContractDeployed={loadContract}
+                  onStatusUpdate={updateStatus}
+                  isConnected={isConnected}
+                  signer={signer}
+                  editedContractCode={editedContractCode}
+                />
+              </Card>
             )}
 
             {activeTab === 'participants' && (
@@ -463,7 +504,7 @@ function App() {
                     isVestingStarted={isVestingStarted}
                   />
                 ) : (
-                  <p>Сначала загрузите контракт на вкладке "Деплой контракта"</p>
+                  <p>Сначала отредактируйте смарт-контракт DEFIMONEquityToken.sol на вкладке "DEFIMONEquityToken.sol", затем разверните его на вкладке "Deploy Contract"</p>
                 )}
               </Card>
             )}
@@ -483,7 +524,7 @@ function App() {
                     isVestingStarted={isVestingStarted}
                   />
                 ) : (
-                  <p>Сначала загрузите контракт на вкладке "Деплой контракта"</p>
+                  <p>Сначала отредактируйте смарт-контракт DEFIMONEquityToken.sol на вкладке "DEFIMONEquityToken.sol", затем разверните его на вкладке "Deploy Contract"</p>
                 )}
               </Card>
             )}
@@ -501,7 +542,7 @@ function App() {
                     isOwner={isOwner}
                   />
                 ) : (
-                  <p>Сначала загрузите контракт на вкладке "Деплой контракта"</p>
+                  <p>Сначала отредактируйте смарт-контракт DEFIMONEquityToken.sol на вкладке "DEFIMONEquityToken.sol", затем разверните его на вкладке "Deploy Contract"</p>
                 )}
               </Card>
             )}
@@ -519,7 +560,7 @@ function App() {
                     isOwner={isOwner}
                   />
                 ) : (
-                  <p>Сначала загрузите контракт на вкладке "Деплой контракта"</p>
+                  <p>Сначала отредактируйте смарт-контракт DEFIMONEquityToken.sol на вкладке "DEFIMONEquityToken.sol", затем разверните его на вкладке "Deploy Contract"</p>
                 )}
               </Card>
             )}
@@ -537,26 +578,18 @@ function App() {
                     isOwner={isOwner}
                   />
                 ) : (
-                  <p>Сначала загрузите контракт на вкладке "Деплой контракта"</p>
+                  <p>Сначала отредактируйте смарт-контракт DEFIMONEquityToken.sol на вкладке "DEFIMONEquityToken.sol", затем разверните его на вкладке "Deploy Contract"</p>
                 )}
               </Card>
             )}
 
-            {activeTab === 'smartContract' && (
+            {activeTab === 'security' && (
               <Card>
                 <h2>
-                  <FaCode style={{ marginRight: '8px' }} />
-                  Smart Contract Editor
+                  <FaShieldAlt style={{ marginRight: '8px' }} />
+                  AI-Powered Security Audit
                 </h2>
-                {contract ? (
-                  <SmartContractEditor 
-                    contract={contract}
-                    onStatusUpdate={updateStatus}
-                    isOwner={isOwner}
-                  />
-                ) : (
-                  <p>Сначала загрузите контракт на вкладке "Деплой контракта"</p>
-                )}
+                <SecurityAuditor />
               </Card>
             )}
           </>

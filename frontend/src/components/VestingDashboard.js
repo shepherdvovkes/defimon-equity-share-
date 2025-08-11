@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import styled from 'styled-components';
 import { ethers } from 'ethers';
 import { FaRocket, FaCheckCircle, FaChartBar, FaUsers } from 'react-icons/fa';
@@ -175,19 +175,24 @@ function VestingDashboard({ contract, participants, onRefresh, onStatusUpdate, i
   const [vestingData, setVestingData] = useState([]);
   const [summary, setSummary] = useState({
     totalParticipants: 0,
-    totalAllocated: 0,
-    totalClaimed: 0,
-    totalVested: 0
+    totalAllocated: '0',
+    totalClaimed: '0',
+    totalVested: '0'
   });
 
-  useEffect(() => {
-    if (contract && participants.length > 0) {
-      calculateVestingData();
-      calculateSummary();
-    }
-  }, [contract, participants, calculateVestingData, calculateSummary]);
+  const formatTime = (seconds) => {
+    if (seconds === 0) return 'Завершен';
+    
+    const years = Math.floor(seconds / (365 * 24 * 60 * 60));
+    const months = Math.floor((seconds % (365 * 24 * 60 * 60)) / (30 * 24 * 60 * 60));
+    const days = Math.floor((seconds % (30 * 24 * 60 * 60)) / (24 * 60 * 60));
+    
+    if (years > 0) return `${years}г ${months}м`;
+    if (months > 0) return `${months}м ${days}д`;
+    return `${days}д`;
+  };
 
-  const calculateVestingData = async () => {
+  const calculateVestingData = useCallback(async () => {
     try {
       const vestingInfo = [];
       
@@ -227,9 +232,9 @@ function VestingDashboard({ contract, participants, onRefresh, onStatusUpdate, i
     } catch (error) {
       console.error('Ошибка расчета данных вестинга:', error);
     }
-  };
+  }, [contract, participants]);
 
-  const calculateSummary = () => {
+  const calculateSummary = useCallback(() => {
     const totalParticipants = participants.filter(p => p.isActive && !p.isLeaver).length;
     const totalAllocated = participants.reduce((sum, p) => sum + parseFloat(p.totalAllocation), 0);
     const totalClaimed = participants.reduce((sum, p) => sum + parseFloat(p.claimedAmount), 0);
@@ -241,19 +246,14 @@ function VestingDashboard({ contract, participants, onRefresh, onStatusUpdate, i
       totalClaimed: totalClaimed.toFixed(2),
       totalVested: totalVested.toFixed(2)
     });
-  };
+  }, [participants, vestingData]);
 
-  const formatTime = (seconds) => {
-    if (seconds === 0) return 'Завершен';
-    
-    const years = Math.floor(seconds / (365 * 24 * 60 * 60));
-    const months = Math.floor((seconds % (365 * 24 * 60 * 60)) / (30 * 24 * 60 * 60));
-    const days = Math.floor((seconds % (30 * 24 * 60 * 60)) / (24 * 60 * 60));
-    
-    if (years > 0) return `${years}г ${months}м`;
-    if (months > 0) return `${months}м ${days}д`;
-    return `${days}д`;
-  };
+  useEffect(() => {
+    if (contract && participants.length > 0) {
+      calculateVestingData();
+      calculateSummary();
+    }
+  }, [contract, participants, calculateVestingData, calculateSummary]);
 
   const claimTokens = async (participant) => {
     try {

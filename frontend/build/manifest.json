@@ -1,0 +1,26 @@
+{
+  "short_name": "DEFIMON",
+  "name": "DEFIMON Equity Token Platform",
+  "description": "Decentralized Financial Daemon - Equity Sharing Platform",
+  "icons": [
+    {
+      "src": "logo/logodefimononlydaemonwhite.jpeg",
+      "sizes": "64x64",
+      "type": "image/jpeg"
+    },
+    {
+      "src": "logo/logodefimononlydaemonwhite.jpeg",
+      "sizes": "192x192",
+      "type": "image/jpeg"
+    },
+    {
+      "src": "logo/logodefimononlydaemonwhite.jpeg",
+      "sizes": "512x512",
+      "type": "image/jpeg"
+    }
+  ],
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#667eea",
+  "background_color": "#ffffff"
+}
