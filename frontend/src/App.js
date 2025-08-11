@@ -5,7 +5,7 @@ import Header from './components/Header';
 import ContractDeployment from './components/ContractDeployment';
 import ParticipantForm from './components/ParticipantForm';
 import VestingDashboard from './components/VestingDashboard';
-import { FaRocket, FaUsers, FaChartLine } from 'react-icons/fa';
+import { FaRocket, FaUsers, FaChartLine, FaLink } from 'react-icons/fa';
 import DEFIMONEquityToken from './contracts/DEFIMONEquityToken.json';
 import { isAuthorizedUser, getUserInfo } from './config/users';
 
