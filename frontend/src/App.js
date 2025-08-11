@@ -8,7 +8,8 @@ import VestingDashboard from './components/VestingDashboard';
 import MultiSignatureManager from './components/MultiSignatureManager';
 import ExchangeManager from './components/ExchangeManager';
 import TokenPriceManager from './components/TokenPriceManager';
-import { FaRocket, FaUsers, FaChartLine, FaSignature, FaExchangeAlt, FaDollarSign } from 'react-icons/fa';
+import SmartContractEditor from './components/SmartContractEditor';
+import { FaRocket, FaUsers, FaChartLine, FaSignature, FaExchangeAlt, FaDollarSign, FaCode } from 'react-icons/fa';
 import DEFIMONEquityToken from './contracts/DEFIMONEquityToken.json';
 import { isAuthorizedUser, getUserInfo } from './config/users';
 
@@ -429,6 +430,13 @@ function App() {
                 <FaDollarSign style={{ marginRight: '8px' }} />
                 Token Price
               </Tab>
+              <Tab 
+                active={activeTab === 'smartContract'} 
+                onClick={() => setActiveTab('smartContract')}
+              >
+                <FaCode style={{ marginRight: '8px' }} />
+                Smart Contract
+              </Tab>
             </TabContainer>
 
             {activeTab === 'deployment' && (
@@ -524,6 +532,24 @@ function App() {
                 </h2>
                 {contract ? (
                   <TokenPriceManager 
+                    contract={contract}
+                    onStatusUpdate={updateStatus}
+                    isOwner={isOwner}
+                  />
+                ) : (
+                  <p>Сначала загрузите контракт на вкладке "Деплой контракта"</p>
+                )}
+              </Card>
+            )}
+
+            {activeTab === 'smartContract' && (
+              <Card>
+                <h2>
+                  <FaCode style={{ marginRight: '8px' }} />
+                  Smart Contract Editor
+                </h2>
+                {contract ? (
+                  <SmartContractEditor 
                     contract={contract}
                     onStatusUpdate={updateStatus}
                     isOwner={isOwner}
