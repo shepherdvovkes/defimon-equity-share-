@@ -5,7 +5,10 @@ import Header from './components/Header';
 import ContractDeployment from './components/ContractDeployment';
 import ParticipantForm from './components/ParticipantForm';
 import VestingDashboard from './components/VestingDashboard';
-import { FaRocket, FaUsers, FaChartLine, FaLink } from 'react-icons/fa';
+import MultiSignatureManager from './components/MultiSignatureManager';
+import ExchangeManager from './components/ExchangeManager';
+import TokenPriceManager from './components/TokenPriceManager';
+import { FaRocket, FaUsers, FaChartLine, FaSignature, FaExchangeAlt, FaDollarSign } from 'react-icons/fa';
 import DEFIMONEquityToken from './contracts/DEFIMONEquityToken.json';
 import { isAuthorizedUser, getUserInfo } from './config/users';
 
@@ -115,6 +118,7 @@ function App() {
   const [status, setStatus] = useState({ type: '', message: '' });
   const [participants, setParticipants] = useState([]);
   const [isVestingStarted, setIsVestingStarted] = useState(false);
+  const [isOwner, setIsOwner] = useState(false);
 
   // Подключение к MetaMask
   const connectWallet = async () => {
@@ -188,7 +192,8 @@ function App() {
       // Проверяем, является ли текущий пользователь владельцем
       const owner = await contract.owner();
       const currentAddress = await signer.getAddress();
-      const isOwner = owner.toLowerCase() === currentAddress.toLowerCase();
+      const isOwnerValue = owner.toLowerCase() === currentAddress.toLowerCase();
+      setIsOwner(isOwnerValue);
       
       // Загружаем участников
       await loadParticipants(contract);
@@ -205,7 +210,7 @@ function App() {
       
       setStatus({
         type: 'success',
-        message: `Контракт загружен! ${isOwner ? 'Вы являетесь владельцем.' : 'Вы не являетесь владельцем.'}`
+        message: `Контракт загружен! ${isOwnerValue ? 'Вы являетесь владельцем.' : 'Вы не являетесь владельцем.'}`
       });
       
     } catch (error) {
@@ -352,25 +357,30 @@ function App() {
                   src="/logo/logodefimonallwhite.jpg" 
                   alt="DEFIMON Logo" 
                   style={{ 
-                    height: '120px', 
+                    height: '180px', 
                     width: 'auto', 
                     marginBottom: '20px',
-                    filter: 'drop-shadow(0 4px 8px rgba(0,0,0,0.2))'
+                    transform: 'scale(1.5)',
+                    transformOrigin: 'center'
                   }}
                   onError={(e) => {
                     e.target.src = "/logo/logodefimononlydaemonwhite.jpeg";
                   }}
                 />
-                <h2 style={{ color: '#667eea', marginBottom: '20px', fontSize: '28px', fontWeight: '600' }}>
-                  Equity Token Platform
+                <h2 style={{ color: '#333', marginBottom: '20px', fontSize: '28px', fontWeight: '600' }}>
+                  Decentralized Financial Daemon
                 </h2>
               </div>
               <p style={{ fontSize: '18px', color: '#666', marginBottom: '30px' }}>
                 Для доступа к платформе подключите ваш кошелек
               </p>
               <ConnectButton onClick={connectWallet}>
-                <FaLink style={{ marginRight: '8px' }} />
-                Подключить кошелек
+                <img 
+                  src="https://cdn.iconscout.com/icon/free/png-256/metamask-2728406-2261817.png" 
+                  alt="MetaMask" 
+                  style={{ width: '20px', height: '20px', marginRight: '8px' }}
+                />
+                Connect Wallet
               </ConnectButton>
             </div>
           </Card>
@@ -397,6 +407,27 @@ function App() {
               >
                 <FaChartLine style={{ marginRight: '8px' }} />
                 Вестинг и клейм
+              </Tab>
+              <Tab 
+                active={activeTab === 'multisig'} 
+                onClick={() => setActiveTab('multisig')}
+              >
+                <FaSignature style={{ marginRight: '8px' }} />
+                Multi-Signature
+              </Tab>
+              <Tab 
+                active={activeTab === 'exchange'} 
+                onClick={() => setActiveTab('exchange')}
+              >
+                <FaExchangeAlt style={{ marginRight: '8px' }} />
+                Exchange System
+              </Tab>
+              <Tab 
+                active={activeTab === 'tokenPrice'} 
+                onClick={() => setActiveTab('tokenPrice')}
+              >
+                <FaDollarSign style={{ marginRight: '8px' }} />
+                Token Price
               </Tab>
             </TabContainer>
 
@@ -442,6 +473,60 @@ function App() {
                     onRefresh={refreshParticipants}
                     onStatusUpdate={updateStatus}
                     isVestingStarted={isVestingStarted}
+                  />
+                ) : (
+                  <p>Сначала загрузите контракт на вкладке "Деплой контракта"</p>
+                )}
+              </Card>
+            )}
+
+            {activeTab === 'multisig' && (
+              <Card>
+                <h2>
+                  <FaSignature style={{ marginRight: '8px' }} />
+                  Multi-Signature Management
+                </h2>
+                {contract ? (
+                  <MultiSignatureManager 
+                    contract={contract}
+                    onStatusUpdate={updateStatus}
+                    isOwner={isOwner}
+                  />
+                ) : (
+                  <p>Сначала загрузите контракт на вкладке "Деплой контракта"</p>
+                )}
+              </Card>
+            )}
+
+            {activeTab === 'exchange' && (
+              <Card>
+                <h2>
+                  <FaExchangeAlt style={{ marginRight: '8px' }} />
+                  Exchange System
+                </h2>
+                {contract ? (
+                  <ExchangeManager 
+                    contract={contract}
+                    onStatusUpdate={updateStatus}
+                    isOwner={isOwner}
+                  />
+                ) : (
+                  <p>Сначала загрузите контракт на вкладке "Деплой контракта"</p>
+                )}
+              </Card>
+            )}
+
+            {activeTab === 'tokenPrice' && (
+              <Card>
+                <h2>
+                  <FaDollarSign style={{ marginRight: '8px' }} />
+                  Token Price Management
+                </h2>
+                {contract ? (
+                  <TokenPriceManager 
+                    contract={contract}
+                    onStatusUpdate={updateStatus}
+                    isOwner={isOwner}
                   />
                 ) : (
                   <p>Сначала загрузите контракт на вкладке "Деплой контракта"</p>
