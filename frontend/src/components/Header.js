@@ -1,12 +1,12 @@
 import React from 'react';
 import styled from 'styled-components';
-import { FaCheckCircle, FaFileContract, FaLink } from 'react-icons/fa';
+import { FaCheckCircle, FaFileContract, FaLink, FaGlobe } from 'react-icons/fa';
 
 const HeaderContainer = styled.header`
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(10px);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  background: white;
+  border-bottom: 1px solid #e0e0e0;
   padding: 20px 0;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 `;
 
 const HeaderContent = styled.div`
@@ -26,31 +26,32 @@ const Logo = styled.div`
   gap: 15px;
 `;
 
-const LogoIcon = styled.div`
-  width: 50px;
-  height: 50px;
-  background: linear-gradient(45deg, #667eea, #764ba2);
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 24px;
-  color: white;
-  font-weight: bold;
+const LogoImage = styled.img`
+  height: 80px;
+  width: auto;
+  object-fit: contain;
 `;
 
 const LogoText = styled.div`
-  h1 {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  
+  .defimon-title {
     margin: 0;
-    color: white;
-    font-size: 28px;
-    font-weight: 700;
+    color: #333;
+    font-size: 24px;
+    font-weight: 800;
+    line-height: 1.2;
+    margin-bottom: 2px;
   }
   
-  p {
-    margin: 5px 0 0 0;
-    color: rgba(255, 255, 255, 0.8);
+  .subtitle {
+    margin: 0;
+    color: #333;
     font-size: 14px;
+    font-weight: 500;
+    line-height: 1.2;
   }
 `;
 
@@ -84,28 +85,28 @@ const ConnectButton = styled.button`
 `;
 
 const WalletInfo = styled.div`
-  background: rgba(255, 255, 255, 0.1);
+  background: #f8f9fa;
   border-radius: 10px;
   padding: 12px 20px;
-  color: white;
+  color: #333;
   font-size: 14px;
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid #e0e0e0;
 `;
 
 const ContractInfo = styled.div`
-  background: rgba(255, 255, 255, 0.1);
+  background: #f8f9fa;
   border-radius: 10px;
   padding: 12px 20px;
-  color: white;
+  color: #333;
   font-size: 14px;
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid #e0e0e0;
   max-width: 300px;
   word-break: break-all;
 `;
 
 const NetworkBadge = styled.span`
-  background: rgba(255, 255, 255, 0.2);
-  color: white;
+  background: #e9ecef;
+  color: #495057;
   padding: 4px 8px;
   border-radius: 12px;
   font-size: 12px;
@@ -113,7 +114,42 @@ const NetworkBadge = styled.span`
   margin-left: 10px;
 `;
 
-function Header({ isConnected, onConnect, contractAddress, currentUser }) {
+const SwitchToSepoliaButton = styled.button`
+  background: linear-gradient(45deg, #28a745, #20c997);
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-right: 10px;
+
+  &:hover {
+    background: linear-gradient(45deg, #218838, #1ea085);
+    transform: translateY(-1px);
+  }
+`;
+
+const DisconnectButton = styled.button`
+  background: rgba(220, 53, 69, 0.8);
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+
+  &:hover {
+    background: rgba(220, 53, 69, 1);
+    transform: translateY(-1px);
+  }
+`;
+
+function Header({ isConnected, onConnect, onDisconnect, contractAddress, currentUser, onForceSwitchToSepolia }) {
   const getNetworkName = () => {
     if (typeof window.ethereum !== 'undefined') {
       const chainId = window.ethereum.chainId;
@@ -142,10 +178,13 @@ function Header({ isConnected, onConnect, contractAddress, currentUser }) {
     <HeaderContainer>
       <HeaderContent>
         <Logo>
-          <LogoIcon>D</LogoIcon>
+          <LogoImage 
+            src="/logo/logodefimononlydaemonwhite.jpeg" 
+            alt="DEFIMON Logo"
+          />
           <LogoText>
-            <h1>DEFIMON</h1>
-            <p>Equity Sharing Platform</p>
+            <h1 className="defimon-title">DEFIMON</h1>
+            <p className="subtitle">Decentralized Financial Daemon</p>
           </LogoText>
         </Logo>
 
@@ -157,6 +196,11 @@ function Header({ isConnected, onConnect, contractAddress, currentUser }) {
             </ConnectButton>
           ) : (
             <>
+              <SwitchToSepoliaButton onClick={onForceSwitchToSepolia}>
+                <FaGlobe style={{ marginRight: '8px' }} />
+                Sepolia
+              </SwitchToSepoliaButton>
+              
               <WalletInfo>
                 <FaCheckCircle style={{ marginRight: '8px', color: '#28a745' }} />
                 {currentUser ? `${currentUser.name} (${currentUser.role})` : 'Кошелек подключен'}
@@ -169,6 +213,10 @@ function Header({ isConnected, onConnect, contractAddress, currentUser }) {
                   Контракт: {formatAddress(contractAddress)}
                 </ContractInfo>
               )}
+              
+              <DisconnectButton onClick={onDisconnect}>
+                Отключить
+              </DisconnectButton>
             </>
           )}
         </WalletSection>

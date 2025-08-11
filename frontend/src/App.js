@@ -258,20 +258,83 @@ function App() {
     }
   };
 
+  // Отключение кошелька
+  const disconnectWallet = () => {
+    setIsConnected(false);
+    setSigner(null);
+    setContract(null);
+    setContractAddress('');
+    setCurrentUser(null);
+    setParticipants([]);
+    setIsVestingStarted(false);
+    setStatus({
+      type: 'info',
+      message: 'Кошелек отключен'
+    });
+  };
+
+  // Принудительное переключение на Sepolia
+  const forceSwitchToSepolia = async () => {
+    try {
+      if (typeof window.ethereum !== 'undefined') {
+        await window.ethereum.request({
+          method: 'wallet_switchEthereumChain',
+          params: [{ chainId: '0xaa36a7' }], // Sepolia chainId
+        });
+        setStatus({
+          type: 'success',
+          message: 'Успешно переключились на Sepolia Testnet'
+        });
+      }
+    } catch (error) {
+      if (error.code === 4902) {
+        // Chain not added, try to add it
+        try {
+          await window.ethereum.request({
+            method: 'wallet_addEthereumChain',
+            params: [{
+              chainId: '0xaa36a7',
+              chainName: 'Sepolia Testnet',
+              nativeCurrency: {
+                name: 'Sepolia Ether',
+                symbol: 'SEP',
+                decimals: 18
+              },
+              rpcUrls: ['https://sepolia.infura.io/v3/'],
+              blockExplorerUrls: ['https://sepolia.etherscan.io/']
+            }]
+          });
+        } catch (addError) {
+          setStatus({
+            type: 'error',
+            message: 'Не удалось добавить Sepolia Testnet'
+          });
+        }
+      } else {
+        setStatus({
+          type: 'error',
+          message: 'Ошибка переключения сети'
+        });
+      }
+    }
+  };
+
   useEffect(() => {
     // Проверяем, есть ли уже подключенный кошелек
     if (typeof window.ethereum !== 'undefined' && window.ethereum.selectedAddress) {
       connectWallet();
     }
-  }, [connectWallet]);
+  }, []);
 
   return (
     <AppContainer>
       <Header 
         isConnected={isConnected}
         onConnect={connectWallet}
+        onDisconnect={disconnectWallet}
         contractAddress={contractAddress}
         currentUser={currentUser}
+        onForceSwitchToSepolia={forceSwitchToSepolia}
       />
       
       <MainContent>
@@ -284,9 +347,24 @@ function App() {
         {!isConnected ? (
           <Card>
             <div style={{ textAlign: 'center', padding: '40px 20px' }}>
-              <h2 style={{ color: '#667eea', marginBottom: '20px' }}>
-                Добро пожаловать в DEFIMON Equity Token
-              </h2>
+              <div style={{ marginBottom: '30px' }}>
+                <img 
+                  src="/logo/logodefimonallwhite.jpg" 
+                  alt="DEFIMON Logo" 
+                  style={{ 
+                    height: '120px', 
+                    width: 'auto', 
+                    marginBottom: '20px',
+                    filter: 'drop-shadow(0 4px 8px rgba(0,0,0,0.2))'
+                  }}
+                  onError={(e) => {
+                    e.target.src = "/logo/logodefimononlydaemonwhite.jpeg";
+                  }}
+                />
+                <h2 style={{ color: '#667eea', marginBottom: '20px', fontSize: '28px', fontWeight: '600' }}>
+                  Equity Token Platform
+                </h2>
+              </div>
               <p style={{ fontSize: '18px', color: '#666', marginBottom: '30px' }}>
                 Для доступа к платформе подключите ваш кошелек
               </p>
