@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="NONE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="09693c40-8973-416d-bfe4-b414cee57f23" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/../analysis_options.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/../analysis_options.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/app/build.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gradle.properties" beforeDir="false" afterPath="$PROJECT_DIR$/gradle.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gradle/wrapper/gradle-wrapper.properties" beforeDir="false" afterPath="$PROJECT_DIR$/gradle/wrapper/gradle-wrapper.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/settings.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/settings.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../lib/screens/contract_deployment_screen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../lib/screens/contract_deployment_screen.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../lib/screens/home_screen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../lib/screens/home_screen.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../lib/screens/wallet_connect_screen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../lib/screens/wallet_connect_screen.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../lib/services/contract_service.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../lib/services/contract_service.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../lib/services/wallet_service.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../lib/services/wallet_service.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../lib/services/web3_service.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../lib/services/web3_service.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../lib/widgets/contract_info_card.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../lib/widgets/contract_info_card.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../lib/widgets/quick_actions.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../lib/widgets/quick_actions.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../lib/widgets/wallet_option_card.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../lib/widgets/wallet_option_card.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../lib/widgets/wallet_status_card.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../lib/widgets/wallet_status_card.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../pubspec.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/../pubspec.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../package.json" beforeDir="false" afterPath="$PROJECT_DIR$/../../package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../start-production.sh" beforeDir="false" afterPath="$PROJECT_DIR$/../../start-production.sh" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ClangdSettings">
+    <option name="formatViaClangd" value="false" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/../.." />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 3
+}</component>
+  <component name="ProjectId" id="3195y9QqQjICs4caPX6vZ8sZIMz" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Gradle.Upgrade Gradle wrapper.executor&quot;: &quot;Run&quot;,
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.cidr.known.project.marker&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.readMode.enableVisualFormatting&quot;: &quot;true&quot;,
+    &quot;android.gradle.sync.needed&quot;: &quot;true&quot;,
+    &quot;cf.first.check.clang-format&quot;: &quot;false&quot;,
+    &quot;cidr.known.project.marker&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;flutter-app&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/Users/vovkes/defimon-equity-share-/flutter_app/android&quot;
+  }
+}</component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="09693c40-8973-416d-bfe4-b414cee57f23" name="Changes" comment="" />
+      <created>1754923700592</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1754923700592</updated>
+    </task>
+    <servers />
+  </component>
+</project>
